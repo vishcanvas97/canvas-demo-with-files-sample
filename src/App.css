@@ -1,3 +1,25 @@
+/* Centered logo styles */
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 32px;
+  margin-bottom: 8px;
+}
+.canvas-logo {
+  width: 88px;
+  height: auto;
+  display: block;
+}
+/* Gradient text for AEL in heading */
+.ael-gradient {
+  background: linear-gradient(90deg, #FD9D43 0%, #EDBF1B 60%, #3FD1CC 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  font-weight: 800;
+}
 /* Material Design-like Form Styles */
 .upload-form, .modal form {
   display: flex;
@@ -53,7 +75,7 @@
   margin-top: 8px;
 }
 .cta-btn.primary {
-  background: linear-gradient(90deg, #1a73e8 0%, #34a853 100%);
+  background: linear-gradient(90deg, #FD9D43 0%, #EDBF1B 60%, #3FD1CC 100%);
   color: #fff;
 }
 .cta-btn.secondary {

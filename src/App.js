@@ -112,21 +112,29 @@ function App() {
     ) {
       setShowEngageForm(true);
       setEngageFormShown(true);
-      // Do not pause video in Engage tab
-      // setVideoModalPaused(true);
-      // videoRef.current.pause();
+      if (activeTab === 'monetize') {
+        setVideoModalPaused(true);
+        videoRef.current.pause();
+      }
     }
   };
 
   const handleCloseEngageForm = () => {
     setShowEngageForm(false);
-    setVideoModalPaused(false);
-    // Do not play video, just close form
+    if (activeTab === 'monetize') {
+      setVideoModalPaused(false);
+      if (videoRef.current) videoRef.current.play();
+    }
   };
 
   return (
     <div className="demo-app">
-      <h1 className="demo-title">Demo Page</h1>
+      <div className="logo-container">
+        <img src={process.env.PUBLIC_URL + '/CanvasLogo.png'} alt="Canvas Logo" className="canvas-logo" />
+      </div>
+      <h1 className="demo-title">
+        Canvas <span className="ael-gradient">AEL</span> Demo
+      </h1>
       <div className="tabs">
         <button
           className={`tab-btn${activeTab === 'engage' ? ' active' : ''}`}
@@ -157,7 +165,7 @@ function App() {
                 </div>
               ))}
             </div>
-            <button className="cta-btn" onClick={handleOpenUploadModal}>Upload Your Content</button>
+            {/* <button className="cta-btn" onClick={handleOpenUploadModal}>Upload Your Content</button> */}
           </div>
         )}
         {activeTab === 'monetize' && (
@@ -295,13 +303,13 @@ function App() {
                 <div style={{flex: '0 0 420px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
                   <div className="modal" style={{maxWidth:400,margin:'0 40px',position:'relative'}}>
                     <button className="modal-close" onClick={handleCloseEngageForm}>&times;</button>
-                    <h3>Engagement Form</h3>
+                    <h3 style={{fontWeight:700,marginBottom:18}}>To view from a different camera feed, enter your email:</h3>
                     <form>
                       <div className="form-group">
-                        <label>Email</label>
                         <input type="email" className="form-input" placeholder="Enter your email" />
                       </div>
                       <div className="form-actions">
+                        <button type="button" className="cta-btn secondary" onClick={handleCloseEngageForm}>Skip</button>
                         <button type="button" className="cta-btn primary" onClick={handleCloseEngageForm}>Submit</button>
                       </div>
                     </form>
@@ -318,13 +326,20 @@ function App() {
         <div className="modal-overlay" style={{zIndex:2000}}>
           <div className="modal" style={{maxWidth:400,margin:'80px auto'}}>
             <button className="modal-close" onClick={handleCloseEngageForm}>&times;</button>
-            <h3>Engagement Form</h3>
+            <h3 style={{fontWeight:700,marginBottom:18}}>To continue watching, tell us how did you know about this movie?</h3>
             <form>
-              <div className="form-group">
-                <label>Email</label>
-                <input type="email" className="form-input" placeholder="Enter your email" />
+              <div className="form-group" style={{alignItems:'flex-start'}}>
+                <label style={{display:'flex',alignItems:'center',gap:'8px',fontWeight:500}}>
+                  <input type="radio" name="monetize_poll" value="youtube" style={{marginRight:8}} />
+                  Watched the trailer on YouTube
+                </label>
+                <label style={{display:'flex',alignItems:'center',gap:'8px',fontWeight:500,marginTop:'10px'}}>
+                  <input type="radio" name="monetize_poll" value="friend" style={{marginRight:8}} />
+                  Shared by a friend
+                </label>
               </div>
               <div className="form-actions">
+                <button type="button" className="cta-btn secondary" onClick={handleCloseEngageForm}>Skip 5s</button>
                 <button type="button" className="cta-btn primary" onClick={handleCloseEngageForm}>Submit</button>
               </div>
             </form>
