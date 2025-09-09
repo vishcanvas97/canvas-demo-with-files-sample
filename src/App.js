@@ -119,11 +119,26 @@ function App() {
     }
   };
 
-  const handleCloseEngageForm = () => {
+  // const handleCloseEngageForm = () => {
+  //   setShowEngageForm(false);
+  //   if (activeTab === 'monetize') {
+  //     setVideoModalPaused(false);
+  //     if (videoRef.current) videoRef.current.play();
+  //   }
+  // };
+  const handleCloseEngageForm = (skipSeconds = 0) => {
     setShowEngageForm(false);
     if (activeTab === 'monetize') {
       setVideoModalPaused(false);
-      if (videoRef.current) videoRef.current.play();
+      if (videoRef.current) {
+        if (skipSeconds > 0) {
+          videoRef.current.currentTime = Math.min(
+            videoRef.current.currentTime + skipSeconds,
+            videoRef.current.duration
+          );
+        }
+        videoRef.current.play();
+      }
     }
   };
 
@@ -165,7 +180,7 @@ function App() {
                 </div>
               ))}
             </div>
-            {/* <button className="cta-btn" onClick={handleOpenUploadModal}>Upload Your Content</button> */}
+             {/* <button className="cta-btn" onClick={handleOpenUploadModal}>Upload Your Content</button>  */}
           </div>
         )}
         {activeTab === 'monetize' && (
@@ -181,7 +196,7 @@ function App() {
                 </div>
               ))}
             </div>
-            <button className="cta-btn" onClick={handleOpenUploadModal}>Upload Your Content</button>
+            {/* <button className="cta-btn" onClick={handleOpenUploadModal}>Upload Your Content</button> */}
           </div>
         )}
       </div>
@@ -339,8 +354,8 @@ function App() {
                 </label>
               </div>
               <div className="form-actions">
-                <button type="button" className="cta-btn secondary" onClick={handleCloseEngageForm}>Skip 5s</button>
-                <button type="button" className="cta-btn primary" onClick={handleCloseEngageForm}>Submit</button>
+              <button type="button" className="cta-btn secondary" onClick={() => handleCloseEngageForm(5)}>Skip 5s</button>
+                <button type="button" className="cta-btn primary" onClick={() => handleCloseEngageForm(0)}>Submit</button>
               </div>
             </form>
           </div>
