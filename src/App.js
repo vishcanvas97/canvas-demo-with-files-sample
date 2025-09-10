@@ -22,12 +22,24 @@ function App() {
       title: 'Cricket Highlights',
       desc: 'Exciting cricket match highlights.',
       lockTime: 2
+    },
+    {
+      src: 'football.mp4',
+      title: 'Football',
+      desc: 'Exciting cricket match highlights.',
+      lockTime: 2
     }
   ]);
   const [monetizeCards, setMonetizeCards] = useState([
     {
       src: 'Movie clip.mp4',
       title: 'Movie Clip',
+      desc: 'A featured movie scene.',
+      lockTime: 2
+    },
+    {
+      src: 'clip.mp4',
+      title: 'Waterfall',
       desc: 'A featured movie scene.',
       lockTime: 2
     }
@@ -119,13 +131,7 @@ function App() {
     }
   };
 
-  // const handleCloseEngageForm = () => {
-  //   setShowEngageForm(false);
-  //   if (activeTab === 'monetize') {
-  //     setVideoModalPaused(false);
-  //     if (videoRef.current) videoRef.current.play();
-  //   }
-  // };
+  // Handles closing the engage form, with optional skip logic
   const handleCloseEngageForm = (skipSeconds = 0) => {
     setShowEngageForm(false);
     if (activeTab === 'monetize') {
@@ -180,7 +186,7 @@ function App() {
                 </div>
               ))}
             </div>
-             {/* <button className="cta-btn" onClick={handleOpenUploadModal}>Upload Your Content</button>  */}
+            {/* <button className="cta-btn" onClick={handleOpenUploadModal}>Upload Your Content</button> */}
           </div>
         )}
         {activeTab === 'monetize' && (
@@ -280,6 +286,11 @@ function App() {
                 src={videoData.src && videoData.src.startsWith('blob:') ? videoData.src : process.env.PUBLIC_URL + '/' + videoData.src}
                 controls
                 autoPlay
+                playsInline
+                disablePictureInPicture
+                webkit-playsinline="true"
+                x5-playsinline="true"
+                x-webkit-airplay="allow"
                 style={{
                   width: '100vw',
                   height: '100vh',
@@ -354,7 +365,7 @@ function App() {
                 </label>
               </div>
               <div className="form-actions">
-              <button type="button" className="cta-btn secondary" onClick={() => handleCloseEngageForm(5)}>Skip 5s</button>
+                <button type="button" className="cta-btn secondary" onClick={() => handleCloseEngageForm(5)}>Skip 5s</button>
                 <button type="button" className="cta-btn primary" onClick={() => handleCloseEngageForm(0)}>Submit</button>
               </div>
             </form>
