@@ -211,7 +211,7 @@ function App() {
       {showUploadModal && (
         <div className="modal-overlay" onClick={handleCloseUploadModal}>
           <div className="modal" onClick={e => e.stopPropagation()}>
-            <button className="modal-close" onClick={handleCloseUploadModal}>&times;</button>
+            {/* <button className="modal-close" onClick={handleCloseUploadModal}>&times;</button> */}
             <h2 className="modal-heading">Transform Your Video Into an Engagement Engine</h2>
             <p className="modal-subline">Upload any video to see Canvas AEL detect peak moments and trigger smart overlays for data capture and monetization.</p>
             <form className="upload-form" onSubmit={handleDemoCanvasAEL}>
@@ -328,7 +328,7 @@ function App() {
                 <div style={{flex: 1}} />
                 <div style={{flex: '0 0 420px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
                   <div className="modal" style={{maxWidth:400,margin:'0 40px',position:'relative'}}>
-                    <button className="modal-close" onClick={handleCloseEngageForm}>&times;</button>
+                    {/* <button className="modal-close" onClick={handleCloseEngageForm}>&times;</button> */}
                     <h3 style={{fontWeight:700,marginBottom:18}}>To view from a different camera feed, enter your email:</h3>
                     <form>
                       <div className="form-group">
