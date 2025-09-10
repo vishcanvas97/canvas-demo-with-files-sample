@@ -19,14 +19,14 @@ function App() {
   const [engageCards, setEngageCards] = useState([
     {
       src: 'Cricket highlights.mp4',
-      title: 'Cricket Highlights',
-      desc: 'Exciting cricket match highlights.',
+      title: 'Cricket',
+      desc: 'Live',
       lockTime: 2
     },
     {
       src: 'football.mp4',
       title: 'Football',
-      desc: 'Exciting cricket match highlights.',
+      desc: 'Live',
       lockTime: 2
     }
   ]);
@@ -34,14 +34,14 @@ function App() {
     {
       src: 'Movie clip.mp4',
       title: 'Movie Clip',
-      desc: 'A featured movie scene.',
+      desc: 'Peak Moment: 2 sec',
       lockTime: 2
     },
     {
       src: 'clip.mp4',
       title: 'Waterfall',
-      desc: 'A featured movie scene.',
-      lockTime: 2
+      desc: 'Peak Moment: 5 sec',
+      lockTime: 5
     }
   ]);
 
@@ -114,11 +114,13 @@ function App() {
     setVideoModalPaused(false);
   };
 
-  // Show form at 2 seconds
+  // Show form at lockTime seconds (dynamic)
   const handleVideoTimeUpdate = () => {
     if (
       videoRef.current &&
-      videoRef.current.currentTime >= 2 &&
+      videoData &&
+      typeof videoData.lockTime !== 'undefined' &&
+      Number(videoRef.current.currentTime) >= Number(videoData.lockTime) &&
       !showEngageForm &&
       !engageFormShown
     ) {
@@ -180,7 +182,7 @@ function App() {
                   <div className="demo-card-info">
                     <div className="demo-card-title">{card.title}</div>
                     <div className="demo-card-desc">
-                      Peak Moment: {card.lockTime ? card.lockTime : 0} sec
+                      {card.desc}
                     </div>
                   </div>
                 </div>
@@ -211,7 +213,7 @@ function App() {
       {showUploadModal && (
         <div className="modal-overlay" onClick={handleCloseUploadModal}>
           <div className="modal" onClick={e => e.stopPropagation()}>
-            {/* <button className="modal-close" onClick={handleCloseUploadModal}>&times;</button> */}
+            <button className="modal-close" onClick={handleCloseUploadModal}>&times;</button>
             <h2 className="modal-heading">Transform Your Video Into an Engagement Engine</h2>
             <p className="modal-subline">Upload any video to see Canvas AEL detect peak moments and trigger smart overlays for data capture and monetization.</p>
             <form className="upload-form" onSubmit={handleDemoCanvasAEL}>
@@ -323,13 +325,13 @@ function App() {
                 justifyContent: 'center',
                 zIndex: 3000,
                 pointerEvents: 'auto',
-                background: 'rgba(0,0,0,0.18)'
+                background: 'rgba(0,0,0,0.04)'
               }}>
                 <div style={{flex: 1}} />
-                <div style={{flex: '0 0 420px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
-                  <div className="modal" style={{maxWidth:400,margin:'0 40px',position:'relative'}}>
+                <div style={{flex: '0 0 320px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
+                  <div className="modal" style={{maxWidth:260,margin:'0 20px',position:'relative',background:'rgba(255,255,255,0.55)'}}>
                     {/* <button className="modal-close" onClick={handleCloseEngageForm}>&times;</button> */}
-                    <h3 style={{fontWeight:700,marginBottom:18}}>To view from a different camera feed, enter your email:</h3>
+                    <h3 style={{fontWeight:700,marginBottom:14,fontSize:'1.08rem'}}>To view from a different camera feed, enter your email:</h3>
                     <form>
                       <div className="form-group">
                         <input type="email" className="form-input" placeholder="Enter your email" />
@@ -351,7 +353,7 @@ function App() {
       {showEngageForm && activeTab !== 'engage' && (
         <div className="modal-overlay" style={{zIndex:2000}}>
           <div className="modal" style={{maxWidth:400,margin:'80px auto'}}>
-            <button className="modal-close" onClick={handleCloseEngageForm}>&times;</button>
+            {/* <button className="modal-close" onClick={handleCloseEngageForm}>&times;</button> */}
             <h3 style={{fontWeight:700,marginBottom:18}}>To continue watching, tell us how did you know about this movie?</h3>
             <form>
               <div className="form-group" style={{alignItems:'flex-start'}}>
