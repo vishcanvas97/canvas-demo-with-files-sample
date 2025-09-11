@@ -37,7 +37,7 @@ function App() {
   ]);
   const [monetizeCards, setMonetizeCards] = useState([
     {
-      src: 'Mission impossible.mp4',
+      src: 'Mission.mp4',
       title: 'Mission impossible',
       desc: 'Peak Moment: 4 sec',
       lockTime: 4
