@@ -13,18 +13,23 @@ function App() {
   const [showEngageForm, setShowEngageForm] = useState(false);
   const [engageFormShown, setEngageFormShown] = useState(false);
   const [videoModalPaused, setVideoModalPaused] = useState(false);
+  const [engageEmail, setEngageEmail] = useState("");
+  const [engageEmailTouched, setEngageEmailTouched] = useState(false);
+  // Countdown for enabling Skip button
+  const [skipCountdown, setSkipCountdown] = useState(0);
+  const skipTimerRef = React.useRef(null);
   const videoRef = React.useRef(null);
 
   // Demo cards for each tab
   const [engageCards, setEngageCards] = useState([
     {
-      src: 'Cricket highlights.mp4',
+      src: 'Cricket.mp4',
       title: 'Cricket',
       desc: 'Live',
       lockTime: 2
     },
     {
-      src: 'football.mp4',
+      src: 'Football live.mp4',
       title: 'Football',
       desc: 'Live',
       lockTime: 2
@@ -32,16 +37,16 @@ function App() {
   ]);
   const [monetizeCards, setMonetizeCards] = useState([
     {
-      src: 'Movie clip.mp4',
-      title: 'Movie Clip',
-      desc: 'Peak Moment: 2 sec',
-      lockTime: 2
+      src: 'Mission impossible.mp4',
+      title: 'Mission impossible',
+      desc: 'Peak Moment: 4 sec',
+      lockTime: 4
     },
     {
       src: 'clip.mp4',
       title: 'Waterfall',
-      desc: 'Peak Moment: 5 sec',
-      lockTime: 5
+      desc: 'Peak Moment: 2 sec',
+      lockTime: 2
     }
   ]);
 
@@ -136,6 +141,13 @@ function App() {
   // Handles closing the engage form, with optional skip logic
   const handleCloseEngageForm = (skipSeconds = 0) => {
     setShowEngageForm(false);
+    setEngageEmail("");
+    setEngageEmailTouched(false);
+    setSkipCountdown(0);
+    if (skipTimerRef.current) {
+      clearInterval(skipTimerRef.current);
+      skipTimerRef.current = null;
+    }
     if (activeTab === 'monetize') {
       setVideoModalPaused(false);
       if (videoRef.current) {
@@ -147,6 +159,53 @@ function App() {
         }
         videoRef.current.play();
       }
+    }
+  };
+  // Start countdown when engage form is shown
+  React.useEffect(() => {
+    if (showEngageForm) {
+      setSkipCountdown(30);
+      if (skipTimerRef.current) clearInterval(skipTimerRef.current);
+      skipTimerRef.current = setInterval(() => {
+        setSkipCountdown(prev => {
+          if (prev <= 1) {
+            clearInterval(skipTimerRef.current);
+            skipTimerRef.current = null;
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else {
+      setSkipCountdown(0);
+      if (skipTimerRef.current) {
+        clearInterval(skipTimerRef.current);
+        skipTimerRef.current = null;
+      }
+    }
+    // Cleanup on unmount
+    return () => {
+      if (skipTimerRef.current) {
+        clearInterval(skipTimerRef.current);
+        skipTimerRef.current = null;
+      }
+    };
+  }, [showEngageForm]);
+
+  // Email validation for engage modal
+  const isValidEmail = (email) => {
+    // Simple email regex
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+  const handleEngageEmailChange = (e) => {
+    setEngageEmail(e.target.value);
+    setEngageEmailTouched(true);
+  };
+  const handleEngageSubmit = () => {
+    if (isValidEmail(engageEmail)) {
+      handleCloseEngageForm();
+    } else {
+      setEngageEmailTouched(true);
     }
   };
 
@@ -328,17 +387,79 @@ function App() {
                 background: 'rgba(0,0,0,0.04)'
               }}>
                 <div style={{flex: 1}} />
-                <div style={{flex: '0 0 320px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
-                  <div className="modal" style={{maxWidth:260,margin:'0 20px',position:'relative',background:'rgba(255,255,255,0.55)'}}>
+                <div style={{
+                  flex: '0 0 85vw',
+                  maxWidth: 180,
+                  minWidth: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '100vh',
+                  marginRight: 0,
+                }}>
+                  <div
+                    className="modal"
+                    style={{
+                      maxWidth: 160,
+                      width: '85vw',
+                      margin: '0 2vw',
+                      position: 'relative',
+                      background: 'rgba(255,255,255,0.60)',
+                      borderRadius: 10,
+                      padding: '10px 6px 10px 6px',
+                      boxSizing: 'border-box',
+                      boxShadow: '0 2px 12px 0 rgba(0,0,0,0.10)',
+                    }}
+                  >
                     {/* <button className="modal-close" onClick={handleCloseEngageForm}>&times;</button> */}
-                    <h3 style={{fontWeight:700,marginBottom:14,fontSize:'1.08rem'}}>To view from a different camera feed, enter your email:</h3>
-                    <form>
-                      <div className="form-group">
-                        <input type="email" className="form-input" placeholder="Enter your email" />
+                    <h3 style={{
+                      fontWeight: 700,
+                      marginBottom: 10,
+                      fontSize: '1rem',
+                      textAlign: 'center',
+                      lineHeight: 1.2,
+                    }}>
+                      {videoData && (videoData.src === 'football.mp4' || videoData.title === 'Football')
+                        ? 'To get a chance to win $5000 lottery, enter your email.'
+                        : 'To view from a different camera feed, enter your email:'}
+                    </h3>
+                    <form onSubmit={e => { e.preventDefault(); handleEngageSubmit(); }}>
+                      <div className="form-group" style={{marginBottom: 10}}>
+                        <input
+                          type="email"
+                          className="form-input"
+                          placeholder="Enter your email"
+                          value={engageEmail}
+                          onChange={handleEngageEmailChange}
+                          onBlur={() => setEngageEmailTouched(true)}
+                          style={{
+                            fontSize: '0.98rem',
+                            padding: '7px 8px',
+                            borderRadius: 6,
+                            width: '100%',
+                            ...(engageEmailTouched && !isValidEmail(engageEmail) ? { borderColor: 'red' } : {}),
+                          }}
+                        />
+                        {engageEmailTouched && !isValidEmail(engageEmail) && (
+                          <div style={{ color: 'red', fontSize: '0.82em', marginTop: 2, textAlign: 'left' }}>Please enter a valid email address.</div>
+                        )}
                       </div>
-                      <div className="form-actions">
-                        <button type="button" className="cta-btn secondary" onClick={handleCloseEngageForm}>Skip</button>
-                        <button type="button" className="cta-btn primary" onClick={handleCloseEngageForm}>Submit</button>
+                      <div className="form-actions" style={{display:'flex',gap:6,flexDirection:'row',justifyContent:'center'}}>
+                        <button
+                          type="button"
+                          className="cta-btn secondary"
+                          onClick={handleCloseEngageForm}
+                          disabled={skipCountdown > 0}
+                          style={{fontSize:'0.98rem',padding:'6px 10px',minWidth:0}}
+                        >
+                          {skipCountdown > 0 ? `Skip (${skipCountdown})` : 'Skip'}
+                        </button>
+                        <button
+                          type="submit"
+                          className="cta-btn primary"
+                          disabled={!isValidEmail(engageEmail)}
+                          style={{fontSize:'0.98rem',padding:'6px 10px',minWidth:0}}
+                        >Submit</button>
                       </div>
                     </form>
                   </div>
@@ -350,7 +471,7 @@ function App() {
       )}
 
       {/* Engagement Form Modal (overlays for Monetize tab only) */}
-      {showEngageForm && activeTab !== 'engage' && (
+  {showEngageForm && activeTab !== 'engage' && (
         <div className="modal-overlay" style={{zIndex:2000}}>
           <div className="modal" style={{maxWidth:400,margin:'80px auto'}}>
             {/* <button className="modal-close" onClick={handleCloseEngageForm}>&times;</button> */}
@@ -367,7 +488,14 @@ function App() {
                 </label>
               </div>
               <div className="form-actions">
-                <button type="button" className="cta-btn secondary" onClick={() => handleCloseEngageForm(5)}>Skip 5s</button>
+                <button
+                  type="button"
+                  className="cta-btn secondary"
+                  onClick={() => handleCloseEngageForm(5)}
+                  disabled={skipCountdown > 0}
+                >
+                  {skipCountdown > 0 ? `Skip (${skipCountdown})` : 'Skip 5s'}
+                </button>
                 <button type="button" className="cta-btn primary" onClick={() => handleCloseEngageForm(0)}>Submit</button>
               </div>
             </form>
