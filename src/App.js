@@ -23,8 +23,8 @@ function App() {
   // Demo cards for each tab
   const [engageCards, setEngageCards] = useState([
     {
-      src: 'Cricket.mp4',
-      title: 'Cricket',
+      src: 'Live cricket.mp4',
+      title: 'Live cricket',
       desc: 'Live',
       lockTime: 2
     },
