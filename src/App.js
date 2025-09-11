@@ -43,8 +43,8 @@ function App() {
       lockTime: 4
     },
     {
-      src: 'clip.mp4',
-      title: 'Waterfall',
+      src: 'Infinite chasing scene.mp4',
+      title: 'Infinite chasing scene',
       desc: 'Peak Moment: 2 sec',
       lockTime: 2
     }
