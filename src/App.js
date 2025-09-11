@@ -37,7 +37,7 @@ function App() {
   ]);
   const [monetizeCards, setMonetizeCards] = useState([
     {
-      src: 'Mission imp.mp4',
+      src: 'Mission.mp4',
       title: 'Mission impossible',
       desc: 'Peak Moment: 4 sec',
       lockTime: 4
@@ -317,6 +317,22 @@ function App() {
           <div
             className="video-modal-flex"
             onClick={e => e.stopPropagation()}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100vw',
+              height: '100vh',
+              maxWidth: '100vw',
+              maxHeight: '100vh',
+              borderRadius: 0,
+              padding: 0,
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              background: 'transparent',
+            }}
           >
             <div style={{flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
               <button
@@ -337,16 +353,14 @@ function App() {
                 x5-playsinline="true"
                 x-webkit-airplay="allow"
                 style={{
-                  width: '70vw',
-                  height: '70vh',
-                  maxWidth: '800px',
-                  maxHeight: '70vh',
-                  borderRadius: '12px',
+                  width: '100vw',
+                  height: '100vh',
+                  maxWidth: '100vw',
+                  maxHeight: '100vh',
+                  borderRadius: 0,
                   background: '#000',
                   margin: 0,
                   objectFit: 'contain',
-                  boxShadow: '0 4px 32px rgba(0,0,0,0.18)',
-                  transition: 'width 0.2s, height 0.2s',
                 }}
                 onTimeUpdate={handleVideoTimeUpdate}
                 paused={videoModalPaused ? 'paused' : undefined}
@@ -374,8 +388,8 @@ function App() {
               }}>
                 <div style={{flex: 1}} />
                 <div style={{
-                  flex: '0 0 90vw',
-                  maxWidth: 320,
+                  flex: '0 0 95vw',
+                  maxWidth: 340,
                   minWidth: 0,
                   display: 'flex',
                   alignItems: 'center',
@@ -387,14 +401,14 @@ function App() {
                     className="modal"
                     style={{
                       maxWidth: 320,
-                      width: '90vw',
+                      width: '95vw',
                       margin: '0 2vw',
                       position: 'relative',
-                      background: 'rgba(255,255,255,0.72)',
+                      background: 'rgba(255,255,255,0.60)',
                       borderRadius: 14,
-                      padding: '18px 10px 18px 10px',
+                      padding: '24px 18px 24px 18px',
                       boxSizing: 'border-box',
-                      boxShadow: '0 2px 16px 0 rgba(0,0,0,0.13)',
+                      boxShadow: '0 4px 24px 0 rgba(0,0,0,0.14)',
                     }}
                   >
                     {/* <button className="modal-close" onClick={handleCloseEngageForm}>&times;</button> */}
