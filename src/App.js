@@ -215,7 +215,7 @@ function App() {
         <img src={process.env.PUBLIC_URL + '/CanvasLogo.png'} alt="Canvas Logo" className="canvas-logo" />
       </div>
       <h1 className="demo-title">
-        Canvas <span className="ael-gradient">AEL</span> Demo
+        Canvas - <span className="ael-gradient">AEL</span> Demo
       </h1>
       <div className="tabs">
         <button
