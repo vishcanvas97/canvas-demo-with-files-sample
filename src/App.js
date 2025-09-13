@@ -409,7 +409,7 @@ function App() {
         <div className="modal-overlay" onClick={() => setShowCanvasDemoMetaModal(false)} style={{backdropFilter:'blur(2px)',background:'rgba(0,0,0,0.18)'}}>
           <div className="modal" onClick={e => e.stopPropagation()} style={{borderRadius:16,boxShadow:'0 6px 32px 0 rgba(0,0,0,0.18)',padding:'32px 28px',minWidth:220,maxWidth:400,width:'90vw',boxSizing:'border-box'}}>
             <button className="modal-close" onClick={() => setShowCanvasDemoMetaModal(false)} style={{position:'absolute',top:12,right:18,fontSize:'2rem',background:'none',border:'none',color:'#333',cursor:'pointer'}}>&times;</button>
-            <h2 className="modal-heading" style={{marginBottom:18,fontWeight:700,fontSize:'1.3rem',textAlign:'center'}}>Video Details</h2>
+            <h2 className="modal-heading" style={{marginBottom:18,fontWeight:700,fontSize:'1.3rem',textAlign:'center'}}>Experience Canvas AEL</h2>
             <form onSubmit={handleCanvasDemoMetaSubmit}>
               <div className="form-group" style={{marginBottom:18}}>
                 <label style={{fontWeight:600,marginBottom:6,display:'block'}}>Name of the Video</label>
