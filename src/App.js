@@ -3,6 +3,16 @@
 import React, { useState } from 'react';
 import './App.css';
 function App() {
+  // State for Canvs Demo tab
+  const [canvasDemoVideos, setCanvasDemoVideos] = useState([]);
+  const [showCanvasDemoUpload, setShowCanvasDemoUpload] = useState(false);
+  const [canvasDemoFile, setCanvasDemoFile] = useState(null);
+  const [canvasDemoFileUrl, setCanvasDemoFileUrl] = useState('');
+  const [canvasDemoTitle, setCanvasDemoTitle] = useState('');
+  const [canvasDemoLockTime, setCanvasDemoLockTime] = useState('');
+  const [showCanvasDemoMetaModal, setShowCanvasDemoMetaModal] = useState(false);
+  const [renameIdx, setRenameIdx] = useState(null);
+  const [renameValue, setRenameValue] = useState('');
   const [activeTab, setActiveTab] = useState('engage');
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
@@ -57,6 +67,64 @@ function App() {
   const [lockTime, setLockTime] = useState('');
 
   const handleTabClick = (tab) => setActiveTab(tab);
+  // Canvs Demo upload flow
+  const handleCanvasDemoUploadClick = () => {
+    setCanvasDemoFile(null);
+    setCanvasDemoFileUrl('');
+    setShowCanvasDemoUpload(true);
+  };
+  const handleCanvasDemoFileChange = (e) => {
+    const f = e.target.files[0];
+    setCanvasDemoFile(f);
+    if (f) setCanvasDemoFileUrl(URL.createObjectURL(f));
+    else setCanvasDemoFileUrl('');
+  };
+  const handleCanvasDemoUploadNext = () => {
+    setShowCanvasDemoUpload(false);
+    setShowCanvasDemoMetaModal(true);
+    setCanvasDemoTitle('');
+    setCanvasDemoLockTime('');
+  };
+  const handleCanvasDemoMetaSubmit = (e) => {
+    e.preventDefault();
+    if (!canvasDemoTitle || !canvasDemoFileUrl) return;
+    setCanvasDemoVideos(prev => [
+      ...prev,
+      {
+        src: canvasDemoFileUrl,
+        title: canvasDemoTitle,
+        lockTime: Number(canvasDemoLockTime) || 0,
+      }
+    ]);
+    setShowCanvasDemoMetaModal(false);
+    setCanvasDemoFile(null);
+    setCanvasDemoFileUrl('');
+    setCanvasDemoTitle('');
+    setCanvasDemoLockTime('');
+  };
+  const handleCanvasDemoDelete = (idx) => {
+    setCanvasDemoVideos(videos => videos.filter((_, i) => i !== idx));
+  };
+  const handleCanvasDemoRename = (idx) => {
+    setRenameIdx(idx);
+    setRenameValue(canvasDemoVideos[idx].title);
+  };
+  const handleCanvasDemoRenameSave = (idx) => {
+    setCanvasDemoVideos(videos =>
+      videos.map((v, i) => i === idx ? { ...v, title: renameValue } : v)
+    );
+    setRenameIdx(null);
+    setRenameValue('');
+  };
+  // Play video in modal (reuse video modal)
+  const handleCanvasDemoCardClick = (card) => {
+    setVideoData(card);
+    setShowVideoModal(true);
+    setShowEngageForm(false);
+    setEngageFormShown(false);
+    setVideoModalPaused(false);
+    setActiveTab('canvasdemo'); // So we know which logic to use for popup
+  };
   const resetForm = () => {
     setDemoName('');
     setFile(null);
@@ -120,6 +188,7 @@ function App() {
   };
 
   // Show form at lockTime seconds (dynamic)
+  // Show form at lockTime seconds (dynamic) - support canvasdemo tab
   const handleVideoTimeUpdate = () => {
     if (
       videoRef.current &&
@@ -131,7 +200,7 @@ function App() {
     ) {
       setShowEngageForm(true);
       setEngageFormShown(true);
-      if (activeTab === 'monetize') {
+      if (activeTab === 'monetize' || activeTab === 'canvasdemo') {
         setVideoModalPaused(true);
         videoRef.current.pause();
       }
@@ -210,7 +279,7 @@ function App() {
   };
 
   return (
-    <div className="demo-app">
+  <div className="demo-app">
       <div className="logo-container">
         <img src={process.env.PUBLIC_URL + '/CanvasLogo.png'} alt="Canvas Logo" className="canvas-logo" />
       </div>
@@ -230,6 +299,12 @@ function App() {
         >
           Canvas Monetize
         </button>
+        <button
+          className={`tab-btn${activeTab === 'canvasdemo' ? ' active' : ''}`}
+          onClick={() => handleTabClick('canvasdemo')}
+        >
+          Canvs Demo
+        </button>
       </div>
       <div className="tab-content">
         {activeTab === 'engage' && (
@@ -247,7 +322,6 @@ function App() {
                 </div>
               ))}
             </div>
-            {/* <button className="cta-btn" onClick={handleOpenUploadModal}>Upload Your Content</button> */}
           </div>
         )}
         {activeTab === 'monetize' && (
@@ -263,10 +337,107 @@ function App() {
                 </div>
               ))}
             </div>
-            {/* <button className="cta-btn" onClick={handleOpenUploadModal}>Upload Your Content</button> */}
+          </div>
+        )}
+        {activeTab === 'canvasdemo' && (
+          <div className="tab-panel">
+            <p className="tab-desc">Try Canvas Demo: Upload your own video and set a lock time for email capture!</p>
+            <button className="cta-btn primary" style={{marginBottom:16}} onClick={handleCanvasDemoUploadClick}>
+              Upload Video
+            </button>
+            <div className="demo-cards">
+              {canvasDemoVideos.length === 0 && (
+                <div style={{color:'#888',padding:'32px 0',textAlign:'center'}}>No videos uploaded yet.</div>
+              )}
+              {canvasDemoVideos.map((card, idx) => (
+                <div className="demo-card" key={idx} style={{position:'relative'}}>
+                  <div onClick={() => handleCanvasDemoCardClick(card)} style={{cursor:'pointer'}}>
+                    <div className="demo-card-title">
+                      {renameIdx === idx ? (
+                        <input
+                          value={renameValue}
+                          onChange={e => setRenameValue(e.target.value)}
+                          style={{fontSize:'1rem',padding:'2px 6px',borderRadius:4}}
+                        />
+                      ) : (
+                        card.title
+                      )}
+                    </div>
+                    <div className="demo-card-desc">
+                      Engagement overlay at {card.lockTime}s
+                    </div>
+                  </div>
+                  <div style={{position:'absolute',top:8,right:8,display:'flex',gap:8}}>
+                    {renameIdx === idx ? (
+                      <button className="cta-btn secondary" style={{fontSize:'0.8em',padding:'2px 8px'}} onClick={() => handleCanvasDemoRenameSave(idx)}>Save</button>
+                    ) : (
+                      <button className="cta-btn secondary" style={{fontSize:'0.8em',padding:'2px 8px'}} onClick={() => handleCanvasDemoRename(idx)}>Rename</button>
+                    )}
+                    <button className="cta-btn secondary" style={{fontSize:'0.8em',padding:'2px 8px'}} onClick={() => handleCanvasDemoDelete(idx)}>Delete</button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
+      {/* Canvas Demo Upload Modal */}
+      {showCanvasDemoUpload && (
+        <div className="modal-overlay" onClick={() => setShowCanvasDemoUpload(false)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setShowCanvasDemoUpload(false)}>&times;</button>
+            <h2 className="modal-heading">Upload a Video</h2>
+            <input
+              type="file"
+              accept="video/*"
+              onChange={handleCanvasDemoFileChange}
+              style={{marginBottom:16}}
+            />
+            <button
+              className="cta-btn primary"
+              disabled={!canvasDemoFileUrl}
+              onClick={handleCanvasDemoUploadNext}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
+      {/* Canvas Demo Meta Modal */}
+      {showCanvasDemoMetaModal && (
+        <div className="modal-overlay" onClick={() => setShowCanvasDemoMetaModal(false)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setShowCanvasDemoMetaModal(false)}>&times;</button>
+            <h2 className="modal-heading">Video Details</h2>
+            <form onSubmit={handleCanvasDemoMetaSubmit}>
+              <div className="form-group">
+                <label>Title</label>
+                <input
+                  type="text"
+                  value={canvasDemoTitle}
+                  onChange={e => setCanvasDemoTitle(e.target.value)}
+                  required
+                  style={{width:'100%',padding:'6px'}}
+                />
+              </div>
+              <div className="form-group">
+                <label>Lock Time (seconds)</label>
+                <input
+                  type="number"
+                  value={canvasDemoLockTime}
+                  onChange={e => setCanvasDemoLockTime(e.target.value)}
+                  min="0"
+                  required
+                  style={{width:'100%',padding:'6px'}}
+                />
+              </div>
+              <button className="cta-btn primary" type="submit" disabled={!canvasDemoTitle || !canvasDemoLockTime}>
+                Save
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Upload Modal */}
       {showUploadModal && (
@@ -470,22 +641,31 @@ function App() {
         </div>
       )}
 
-      {/* Engagement Form Modal (overlays for Monetize tab only) */}
-  {showEngageForm && activeTab !== 'engage' && (
+      {/* Engagement Form Modal (overlays for Monetize tab and Canvas Demo tab) */}
+      {showEngageForm && (activeTab === 'monetize' || activeTab === 'canvasdemo') && (
         <div className="modal-overlay" style={{zIndex:2000}}>
           <div className="modal" style={{maxWidth:400,margin:'80px auto'}}>
-            {/* <button className="modal-close" onClick={handleCloseEngageForm}>&times;</button> */}
-            <h3 style={{fontWeight:700,marginBottom:18}}>To continue watching, tell us how did you know about this movie?</h3>
-            <form>
+            <h3 style={{fontWeight:700,marginBottom:18}}>To continue watching, enter your email:</h3>
+            <form onSubmit={e => { e.preventDefault(); handleEngageSubmit(); }}>
               <div className="form-group" style={{alignItems:'flex-start'}}>
-                <label style={{display:'flex',alignItems:'center',gap:'8px',fontWeight:500}}>
-                  <input type="radio" name="monetize_poll" value="youtube" style={{marginRight:8}} />
-                  Watched the trailer on YouTube
-                </label>
-                <label style={{display:'flex',alignItems:'center',gap:'8px',fontWeight:500,marginTop:'10px'}}>
-                  <input type="radio" name="monetize_poll" value="friend" style={{marginRight:8}} />
-                  Shared by a friend
-                </label>
+                <input
+                  type="email"
+                  className="form-input"
+                  placeholder="Enter your email"
+                  value={engageEmail}
+                  onChange={handleEngageEmailChange}
+                  onBlur={() => setEngageEmailTouched(true)}
+                  style={{
+                    fontSize: '0.98rem',
+                    padding: '7px 8px',
+                    borderRadius: 6,
+                    width: '100%',
+                    ...(engageEmailTouched && !isValidEmail(engageEmail) ? { borderColor: 'red' } : {}),
+                  }}
+                />
+                {engageEmailTouched && !isValidEmail(engageEmail) && (
+                  <div style={{ color: 'red', fontSize: '0.82em', marginTop: 2, textAlign: 'left' }}>Please enter a valid email address.</div>
+                )}
               </div>
               <div className="form-actions">
                 <button
@@ -496,7 +676,7 @@ function App() {
                 >
                   {skipCountdown > 0 ? `Skip (${skipCountdown})` : 'Skip 5s'}
                 </button>
-                <button type="button" className="cta-btn primary" onClick={() => handleCloseEngageForm(0)}>Submit</button>
+                <button type="submit" className="cta-btn primary" disabled={!isValidEmail(engageEmail)}>Submit</button>
               </div>
             </form>
           </div>
