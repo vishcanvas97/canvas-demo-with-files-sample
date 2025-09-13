@@ -384,7 +384,7 @@ function App() {
       {/* Canvas Demo Upload Modal */}
       {showCanvasDemoUpload && (
         <div className="modal-overlay" onClick={() => setShowCanvasDemoUpload(false)} style={{backdropFilter:'blur(2px)',background:'rgba(0,0,0,0.18)'}}>
-          <div className="modal" onClick={e => e.stopPropagation()} style={{borderRadius:16,boxShadow:'0 6px 32px 0 rgba(0,0,0,0.18)',padding:'32px 28px',minWidth:320}}>
+          <div className="modal" onClick={e => e.stopPropagation()} style={{borderRadius:16,boxShadow:'0 6px 32px 0 rgba(0,0,0,0.18)',padding:'32px 28px',minWidth:220,maxWidth:400,width:'90vw',boxSizing:'border-box'}}>
             <button className="modal-close" onClick={() => setShowCanvasDemoUpload(false)} style={{position:'absolute',top:12,right:18,fontSize:'2rem',background:'none',border:'none',color:'#333',cursor:'pointer'}}>&times;</button>
             <h2 className="modal-heading" style={{marginBottom:18,fontWeight:700,fontSize:'1.3rem',textAlign:'center'}}>Upload a Video</h2>
             <input
@@ -407,12 +407,12 @@ function App() {
       {/* Canvas Demo Meta Modal */}
       {showCanvasDemoMetaModal && (
         <div className="modal-overlay" onClick={() => setShowCanvasDemoMetaModal(false)} style={{backdropFilter:'blur(2px)',background:'rgba(0,0,0,0.18)'}}>
-          <div className="modal" onClick={e => e.stopPropagation()} style={{borderRadius:16,boxShadow:'0 6px 32px 0 rgba(0,0,0,0.18)',padding:'32px 28px',minWidth:320}}>
+          <div className="modal" onClick={e => e.stopPropagation()} style={{borderRadius:16,boxShadow:'0 6px 32px 0 rgba(0,0,0,0.18)',padding:'32px 28px',minWidth:220,maxWidth:400,width:'90vw',boxSizing:'border-box'}}>
             <button className="modal-close" onClick={() => setShowCanvasDemoMetaModal(false)} style={{position:'absolute',top:12,right:18,fontSize:'2rem',background:'none',border:'none',color:'#333',cursor:'pointer'}}>&times;</button>
             <h2 className="modal-heading" style={{marginBottom:18,fontWeight:700,fontSize:'1.3rem',textAlign:'center'}}>Video Details</h2>
             <form onSubmit={handleCanvasDemoMetaSubmit}>
               <div className="form-group" style={{marginBottom:18}}>
-                <label style={{fontWeight:600,marginBottom:6,display:'block'}}>Title</label>
+                <label style={{fontWeight:600,marginBottom:6,display:'block'}}>Name of the Video</label>
                 <input
                   type="text"
                   value={canvasDemoTitle}
@@ -645,7 +645,7 @@ function App() {
       {/* Engagement Form Modal (overlays for Monetize tab and Canvas Demo tab) */}
       {showEngageForm && (activeTab === 'monetize' || activeTab === 'canvasdemo') && (
         <div className="modal-overlay" style={{zIndex:2000,backdropFilter:'blur(2px)',background:'rgba(0,0,0,0.18)'}}>
-          <div className="modal" style={{maxWidth:400,margin:'80px auto',borderRadius:16,boxShadow:'0 6px 32px 0 rgba(0,0,0,0.18)',padding:'32px 28px'}}>
+          <div className="modal" style={{maxWidth:400,margin:'80px auto',borderRadius:16,boxShadow:'0 6px 32px 0 rgba(0,0,0,0.18)',padding:'32px 28px',width:'90vw',boxSizing:'border-box'}}>
             <h3 style={{fontWeight:700,marginBottom:18,textAlign:'center',fontSize:'1.15rem'}}>To continue watching, enter your email:</h3>
             <form onSubmit={e => { e.preventDefault(); handleEngageSubmit(); }}>
               <div className="form-group" style={{alignItems:'flex-start',marginBottom:18}}>
