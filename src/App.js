@@ -432,7 +432,19 @@ function App() {
                   style={{width:'100%',padding:'10px 18px',border:'1px solid #ddd',borderRadius:8,fontSize:'1rem',boxSizing:'border-box'}}
                 />
               </div>
-              <button className="cta-btn primary" type="submit" disabled={!canvasDemoTitle || !canvasDemoLockTime} style={{width:'100%',padding:'10px',borderRadius:8,background:'linear-gradient(90deg,#3b82f6,#06b6d4)',color:'#fff',fontWeight:600,letterSpacing:0.5,fontSize:'1rem',marginTop:8,border:'none',boxShadow:'0 2px 8px 0 rgba(59,130,246,0.08)'}}>
+              <button className="cta-btn primary" type="submit" disabled={!canvasDemoTitle || !canvasDemoLockTime} style={{
+                width:'100%',
+                padding:'10px',
+                borderRadius:8,
+                background:'linear-gradient(90deg,#FD9D43,#EDBF1B,#3FD1CC)',
+                color:'#fff',
+                fontWeight:600,
+                letterSpacing:0.5,
+                fontSize:'1rem',
+                marginTop:8,
+                border:'none',
+                boxShadow:'0 2px 8px 0 rgba(59,130,246,0.08)'
+              }}>
                 Save
               </button>
             </form>
