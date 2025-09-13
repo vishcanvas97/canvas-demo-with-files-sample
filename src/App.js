@@ -2,15 +2,6 @@
 
 import React, { useState } from 'react';
 import './App.css';
-import {
-  AppBar, Tabs, Tab, Box, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, IconButton, Card, CardContent, CardActions, Stack, Snackbar, Alert
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
-import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 function App() {
   // State for Canvs Demo tab
   const [canvasDemoVideos, setCanvasDemoVideos] = useState([]);
@@ -23,7 +14,6 @@ function App() {
   const [renameIdx, setRenameIdx] = useState(null);
   const [renameValue, setRenameValue] = useState('');
   const [activeTab, setActiveTab] = useState('engage');
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [videoData, setVideoData] = useState(null);
@@ -39,197 +29,101 @@ function App() {
   const [skipCountdown, setSkipCountdown] = useState(0);
   const skipTimerRef = React.useRef(null);
   const videoRef = React.useRef(null);
-  return (
-    </>
-  );
-}
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 4 }}>
-          <img src={process.env.PUBLIC_URL + '/CanvasLogo.png'} alt="Canvas Logo" style={{ width: 80, marginBottom: 8 }} />
-          <Typography variant="h4" fontWeight={700} sx={{ mb: 2 }}>
-            Canvas - <Box component="span" className="ael-gradient" sx={{ background: 'linear-gradient(90deg,#ff512f,#dd2476)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 700 }}>AEL</Box> Demo
-          </Typography>
-          <AppBar position="static" color="default" sx={{ borderRadius: 2, boxShadow: 1, mb: 3, width: '100%', maxWidth: 600 }}>
-            <Tabs
-              value={activeTab}
-              onChange={handleTabClick}
-              indicatorColor="primary"
-              textColor="primary"
-              variant="fullWidth"
-            >
-              <Tab label="Canvas Engage" value="engage" />
-              <Tab label="Canvas Monetize" value="monetize" />
-              <Tab label="Canvs Demo" value="canvasdemo" />
-            </Tabs>
-          </AppBar>
-        </Box>
-        <Box sx={{ maxWidth: 700, mx: 'auto', mt: 2 }}>
-          {activeTab === 'engage' && (
-            <Box>
-              <Typography variant="subtitle1" sx={{ mb: 2 }}>Live Sports & Events - Trigger real-time fan interactions</Typography>
-              <Stack direction="row" spacing={2} flexWrap="wrap">
-                {engageCards.map((card, idx) => (
-                  <Card key={idx} sx={{ minWidth: 220, mb: 2, cursor: 'pointer', flex: '1 1 220px' }} onClick={() => handleDemoCardClick(card)}>
-                    <CardContent>
-                      <Typography variant="h6">{card.title}</Typography>
-                      <Typography variant="body2" color="text.secondary">{card.desc}</Typography>
-                    </CardContent>
-                  </Card>
-                ))}
-              </Stack>
-            </Box>
-          )}
-          {activeTab === 'monetize' && (
-            <Box>
-              <Typography variant="subtitle1" sx={{ mb: 2 }}>OTT & Content Platforms - Transform attention into revenue</Typography>
-              <Stack direction="row" spacing={2} flexWrap="wrap">
-                {monetizeCards.map((card, idx) => (
-                  <Card key={idx} sx={{ minWidth: 220, mb: 2, cursor: 'pointer', flex: '1 1 220px' }} onClick={() => handleDemoCardClick(card)}>
-                    <CardContent>
-                      <Typography variant="h6">{card.title}</Typography>
-                      <Typography variant="body2" color="text.secondary">{card.desc}</Typography>
-                    </CardContent>
-                  </Card>
-                ))}
-              </Stack>
-            </Box>
-          )}
-          {activeTab === 'canvasdemo' && (
-            <Box>
-              <Typography variant="subtitle1" sx={{ mb: 2 }}>Try Canvas Demo: Upload your own video and set a lock time for email capture!</Typography>
-              <Button variant="contained" startIcon={<UploadFileIcon />} sx={{ mb: 2 }} onClick={handleCanvasDemoUploadClick}>
-                Upload Video
-              </Button>
-              <Stack direction="row" spacing={2} flexWrap="wrap">
-                {canvasDemoVideos.length === 0 && (
-                  <Typography color="text.secondary" sx={{ py: 4, textAlign: 'center', width: '100%' }}>No videos uploaded yet.</Typography>
-                )}
-                {canvasDemoVideos.map((card, idx) => (
-                  <Card key={idx} sx={{ minWidth: 220, mb: 2, position: 'relative', flex: '1 1 220px' }}>
-                    <CardContent sx={{ cursor: 'pointer' }} onClick={() => handleCanvasDemoCardClick(card)}>
-                      <Stack direction="row" alignItems="center" spacing={1}>
-                        <PlayCircleOutlineIcon color="primary" />
-                        {renameIdx === idx ? (
-                          <TextField
-                            value={renameValue}
-                            onChange={e => setRenameValue(e.target.value)}
-                            size="small"
-                            sx={{ flex: 1 }}
-                          />
-                        ) : (
-                          <Typography variant="h6">{card.title}</Typography>
-                        )}
-                      </Stack>
-                      <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                        Engagement overlay at {card.lockTime}s
-                      </Typography>
-                    </CardContent>
-                    <CardActions sx={{ position: 'absolute', top: 0, right: 0 }}>
-                      {renameIdx === idx ? (
-                        <IconButton size="small" color="primary" onClick={() => handleCanvasDemoRenameSave(idx)}><SaveIcon /></IconButton>
-                      ) : (
-                        <IconButton size="small" color="primary" onClick={() => handleCanvasDemoRename(idx)}><EditIcon /></IconButton>
-                      )}
-                      <IconButton size="small" color="error" onClick={() => handleCanvasDemoDelete(idx)}><DeleteIcon /></IconButton>
-                    </CardActions>
-                  </Card>
-                ))}
-              </Stack>
-            </Box>
-          )}
-        </Box>
-      </Box>
-      {/* Canvas Demo Upload Modal */}
-      <Dialog open={showCanvasDemoUpload} onClose={() => setShowCanvasDemoUpload(false)}>
-        <DialogTitle>Upload a Video
-          <IconButton aria-label="close" onClick={() => setShowCanvasDemoUpload(false)} sx={{ position: 'absolute', right: 8, top: 8 }}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <Button variant="outlined" component="label" startIcon={<UploadFileIcon />} fullWidth sx={{ mb: 2 }}>
-            Select Video File
-            <input type="file" accept="video/*" hidden onChange={handleCanvasDemoFileChange} />
-          </Button>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowCanvasDemoUpload(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleCanvasDemoUploadNext} disabled={!canvasDemoFileUrl}>Next</Button>
-        </DialogActions>
-      </Dialog>
-      {/* Canvas Demo Meta Modal */}
-      <Dialog open={showCanvasDemoMetaModal} onClose={() => setShowCanvasDemoMetaModal(false)}>
-        <DialogTitle>Video Details
-          <IconButton aria-label="close" onClick={() => setShowCanvasDemoMetaModal(false)} sx={{ position: 'absolute', right: 8, top: 8 }}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <Box component="form" onSubmit={handleCanvasDemoMetaSubmit} sx={{ mt: 1 }}>
-            <TextField
-              label="Title"
-              value={canvasDemoTitle}
-              onChange={e => setCanvasDemoTitle(e.target.value)}
-              required
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Lock Time (seconds)"
-              type="number"
-              value={canvasDemoLockTime}
-              onChange={e => setCanvasDemoLockTime(e.target.value)}
-              required
-              fullWidth
-              inputProps={{ min: 0 }}
-            />
-            <DialogActions sx={{ mt: 2 }}>
-              <Button onClick={() => setShowCanvasDemoMetaModal(false)}>Cancel</Button>
-              <Button type="submit" variant="contained" disabled={!canvasDemoTitle || !canvasDemoLockTime}>Save</Button>
-            </DialogActions>
-          </Box>
-        </DialogContent>
-      </Dialog>
-      {/* Engagement Form Modal (overlays for Monetize tab and Canvas Demo tab) */}
-      <Dialog open={showEngageForm && (activeTab === 'monetize' || activeTab === 'canvasdemo')} onClose={() => handleCloseEngageForm(0)}>
-        <DialogTitle>To continue watching, enter your email:
-          <IconButton aria-label="close" onClick={() => handleCloseEngageForm(0)} sx={{ position: 'absolute', right: 8, top: 8 }}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <Box component="form" onSubmit={e => { e.preventDefault(); handleEngageSubmit(); }}>
-            <TextField
-              label="Email"
-              type="email"
-              value={engageEmail}
-              onChange={handleEngageEmailChange}
-              onBlur={() => setEngageEmailTouched(true)}
-              error={engageEmailTouched && !isValidEmail(engageEmail)}
-              helperText={engageEmailTouched && !isValidEmail(engageEmail) ? 'Please enter a valid email address.' : ''}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <DialogActions>
-              <Button onClick={() => handleCloseEngageForm(5)} disabled={skipCountdown > 0} color="secondary">
-                {skipCountdown > 0 ? `Skip (${skipCountdown})` : 'Skip 5s'}
-              </Button>
-              <Button type="submit" variant="contained" disabled={!isValidEmail(engageEmail)}>Submit</Button>
-            </DialogActions>
-          </Box>
-        </DialogContent>
-      </Dialog>
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </>
-  );
+
+  // Demo cards for each tab
+  const [engageCards, setEngageCards] = useState([
+    {
+      src: 'Cricket live.mp4',
+      title: 'Live cricket',
+      desc: 'Live',
+      lockTime: 2
+    },
+    {
+      src: 'Football vid.mp4',
+      title: 'Football',
+      desc: 'Live',
+      lockTime: 2
+    }
+  ]);
+  const [monetizeCards, setMonetizeCards] = useState([
+    {
+      src: 'Mission imp.mp4',
+      title: 'Mission impossible',
+      desc: 'Peak Moment: 4 sec',
+      lockTime: 4
+    },
+    {
+      src: 'Infinite chasing.mp4',
+      title: 'Infinite chasing scene',
+      desc: 'Peak Moment: 2 sec',
+      lockTime: 2
+    }
+  ]);
+
+  // Form state
+  const [demoName, setDemoName] = useState('');
+  const [file, setFile] = useState(null);
+  const [fileUrl, setFileUrl] = useState('');
+  const [lockTime, setLockTime] = useState('');
+
+  const handleTabClick = (tab) => setActiveTab(tab);
+  // Canvs Demo upload flow
+  const handleCanvasDemoUploadClick = () => {
+    setCanvasDemoFile(null);
+    setCanvasDemoFileUrl('');
+    setShowCanvasDemoUpload(true);
+  };
+  const handleCanvasDemoFileChange = (e) => {
+    const f = e.target.files[0];
+    setCanvasDemoFile(f);
+    if (f) setCanvasDemoFileUrl(URL.createObjectURL(f));
+    else setCanvasDemoFileUrl('');
+  };
+  const handleCanvasDemoUploadNext = () => {
+    setShowCanvasDemoUpload(false);
+    setShowCanvasDemoMetaModal(true);
+    setCanvasDemoTitle('');
+    setCanvasDemoLockTime('');
+  };
+  const handleCanvasDemoMetaSubmit = (e) => {
+    e.preventDefault();
+    if (!canvasDemoTitle || !canvasDemoFileUrl) return;
+    setCanvasDemoVideos(prev => [
+      ...prev,
+      {
+        src: canvasDemoFileUrl,
+        title: canvasDemoTitle,
+        lockTime: Number(canvasDemoLockTime) || 0,
+      }
+    ]);
+    setShowCanvasDemoMetaModal(false);
+    setCanvasDemoFile(null);
+    setCanvasDemoFileUrl('');
+    setCanvasDemoTitle('');
+    setCanvasDemoLockTime('');
+  };
+  const handleCanvasDemoDelete = (idx) => {
+    setCanvasDemoVideos(videos => videos.filter((_, i) => i !== idx));
+  };
+  const handleCanvasDemoRename = (idx) => {
+    setRenameIdx(idx);
+    setRenameValue(canvasDemoVideos[idx].title);
+  };
+  const handleCanvasDemoRenameSave = (idx) => {
+    setCanvasDemoVideos(videos =>
+      videos.map((v, i) => i === idx ? { ...v, title: renameValue } : v)
+    );
+    setRenameIdx(null);
+    setRenameValue('');
+  };
+  // Play video in modal (reuse video modal)
+  const handleCanvasDemoCardClick = (card) => {
+    setVideoData(card);
+    setShowVideoModal(true);
+    setShowEngageForm(false);
+    setEngageFormShown(false);
+    setVideoModalPaused(false);
+    setActiveTab('canvasdemo'); // So we know which logic to use for popup
   };
   const resetForm = () => {
     setDemoName('');
@@ -385,152 +279,166 @@ function App() {
   };
 
   return (
-  <Box sx={{ bgcolor: '#f5f6fa', minHeight: '100vh' }}>
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 4 }}>
-      <img src={process.env.PUBLIC_URL + '/CanvasLogo.png'} alt="Canvas Logo" style={{ width: 80, marginBottom: 8 }} />
-      <Typography variant="h4" fontWeight={700} sx={{ mb: 2 }}>
-        Canvas - <Box component="span" className="ael-gradient" sx={{ background: 'linear-gradient(90deg,#ff512f,#dd2476)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 700 }}>AEL</Box> Demo
-      </Typography>
-      <AppBar position="static" color="default" sx={{ borderRadius: 2, boxShadow: 1, mb: 3, width: '100%', maxWidth: 600 }}>
-        <Tabs
-          value={activeTab}
-          onChange={handleTabClick}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="fullWidth"
+  <div className="demo-app">
+      <div className="logo-container">
+        <img src={process.env.PUBLIC_URL + '/CanvasLogo.png'} alt="Canvas Logo" className="canvas-logo" />
+      </div>
+      <h1 className="demo-title">
+        Canvas - <span className="ael-gradient">AEL</span> Demo
+      </h1>
+      <div className="tabs">
+        <button
+          className={`tab-btn${activeTab === 'engage' ? ' active' : ''}`}
+          onClick={() => handleTabClick('engage')}
         >
-          <Tab label="Canvas Engage" value="engage" />
-          <Tab label="Canvas Monetize" value="monetize" />
-          <Tab label="Canvs Demo" value="canvasdemo" />
-        </Tabs>
-      </AppBar>
-    </Box>
-      <Box sx={{ maxWidth: 700, mx: 'auto', mt: 2 }}>
+          Canvas Engage
+        </button>
+        <button
+          className={`tab-btn${activeTab === 'monetize' ? ' active' : ''}`}
+          onClick={() => handleTabClick('monetize')}
+        >
+          Canvas Monetize
+        </button>
+        <button
+          className={`tab-btn${activeTab === 'canvasdemo' ? ' active' : ''}`}
+          onClick={() => handleTabClick('canvasdemo')}
+        >
+          Canvs Demo
+        </button>
+      </div>
+      <div className="tab-content">
         {activeTab === 'engage' && (
-          <Box>
-            <Typography variant="subtitle1" sx={{ mb: 2 }}>Live Sports & Events - Trigger real-time fan interactions</Typography>
-            <Stack direction="row" spacing={2} flexWrap="wrap">
+          <div className="tab-panel">
+            <p className="tab-desc">Live Sports & Events - Trigger real-time fan interactions</p>
+            <div className="demo-cards">
               {engageCards.map((card, idx) => (
-                <Card key={idx} sx={{ minWidth: 220, mb: 2, cursor: 'pointer', flex: '1 1 220px' }} onClick={() => handleDemoCardClick(card)}>
-                  <CardContent>
-                    <Typography variant="h6">{card.title}</Typography>
-                    <Typography variant="body2" color="text.secondary">{card.desc}</Typography>
-                  </CardContent>
-                </Card>
+                <div className="demo-card" key={idx} onClick={() => handleDemoCardClick(card)}>
+                  <div className="demo-card-info">
+                    <div className="demo-card-title">{card.title}</div>
+                    <div className="demo-card-desc">
+                      {card.desc}
+                    </div>
+                  </div>
+                </div>
               ))}
-            </Stack>
-          </Box>
+            </div>
+          </div>
         )}
         {activeTab === 'monetize' && (
-          <Box>
-            <Typography variant="subtitle1" sx={{ mb: 2 }}>OTT & Content Platforms - Transform attention into revenue</Typography>
-            <Stack direction="row" spacing={2} flexWrap="wrap">
+          <div className="tab-panel">
+            <p className="tab-desc">OTT & Content Platforms - Transform attention into revenue</p>
+            <div className="demo-cards">
               {monetizeCards.map((card, idx) => (
-                <Card key={idx} sx={{ minWidth: 220, mb: 2, cursor: 'pointer', flex: '1 1 220px' }} onClick={() => handleDemoCardClick(card)}>
-                  <CardContent>
-                    <Typography variant="h6">{card.title}</Typography>
-                    <Typography variant="body2" color="text.secondary">{card.desc}</Typography>
-                  </CardContent>
-                </Card>
+                <div className="demo-card" key={idx} onClick={() => handleDemoCardClick(card)}>
+                  <div className="demo-card-info">
+                    <div className="demo-card-title">{card.title}</div>
+                    <div className="demo-card-desc">{card.desc}</div>
+                  </div>
+                </div>
               ))}
-            </Stack>
-          </Box>
+            </div>
+          </div>
         )}
         {activeTab === 'canvasdemo' && (
-          <Box>
-            <Typography variant="subtitle1" sx={{ mb: 2 }}>Try Canvas Demo: Upload your own video and set a lock time for email capture!</Typography>
-            <Button variant="contained" startIcon={<UploadFileIcon />} sx={{ mb: 2 }} onClick={handleCanvasDemoUploadClick}>
+          <div className="tab-panel">
+            <p className="tab-desc">Try Canvas Demo: Upload your own video and set a lock time for email capture!</p>
+            <button className="cta-btn primary" style={{marginBottom:16}} onClick={handleCanvasDemoUploadClick}>
               Upload Video
-            </Button>
-            <Stack direction="row" spacing={2} flexWrap="wrap">
+            </button>
+            <div className="demo-cards">
               {canvasDemoVideos.length === 0 && (
-                <Typography color="text.secondary" sx={{ py: 4, textAlign: 'center', width: '100%' }}>No videos uploaded yet.</Typography>
+                <div style={{color:'#888',padding:'32px 0',textAlign:'center'}}>No videos uploaded yet.</div>
               )}
               {canvasDemoVideos.map((card, idx) => (
-                <Card key={idx} sx={{ minWidth: 220, mb: 2, position: 'relative', flex: '1 1 220px' }}>
-                  <CardContent sx={{ cursor: 'pointer' }} onClick={() => handleCanvasDemoCardClick(card)}>
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                      <PlayCircleOutlineIcon color="primary" />
+                <div className="demo-card" key={idx} style={{position:'relative'}}>
+                  <div onClick={() => handleCanvasDemoCardClick(card)} style={{cursor:'pointer'}}>
+                    <div className="demo-card-title">
                       {renameIdx === idx ? (
-                        <TextField
+                        <input
                           value={renameValue}
                           onChange={e => setRenameValue(e.target.value)}
-                          size="small"
-                          sx={{ flex: 1 }}
+                          style={{fontSize:'1rem',padding:'2px 6px',borderRadius:4}}
                         />
                       ) : (
-                        <Typography variant="h6">{card.title}</Typography>
+                        card.title
                       )}
-                    </Stack>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    </div>
+                    <div className="demo-card-desc">
                       Engagement overlay at {card.lockTime}s
-                    </Typography>
-                  </CardContent>
-                  <CardActions sx={{ position: 'absolute', top: 0, right: 0 }}>
+                    </div>
+                  </div>
+                  <div style={{position:'absolute',top:8,right:8,display:'flex',gap:8}}>
                     {renameIdx === idx ? (
-                      <IconButton size="small" color="primary" onClick={() => handleCanvasDemoRenameSave(idx)}><SaveIcon /></IconButton>
+                      <button className="cta-btn secondary" style={{fontSize:'0.8em',padding:'2px 8px'}} onClick={() => handleCanvasDemoRenameSave(idx)}>Save</button>
                     ) : (
-                      <IconButton size="small" color="primary" onClick={() => handleCanvasDemoRename(idx)}><EditIcon /></IconButton>
+                      <button className="cta-btn secondary" style={{fontSize:'0.8em',padding:'2px 8px'}} onClick={() => handleCanvasDemoRename(idx)}>Rename</button>
                     )}
-                    <IconButton size="small" color="error" onClick={() => handleCanvasDemoDelete(idx)}><DeleteIcon /></IconButton>
-                  </CardActions>
-                </Card>
+                    <button className="cta-btn secondary" style={{fontSize:'0.8em',padding:'2px 8px'}} onClick={() => handleCanvasDemoDelete(idx)}>Delete</button>
+                  </div>
+                </div>
               ))}
-            </Stack>
-          </Box>
+            </div>
+          </div>
         )}
-      </Box>
+      </div>
       {/* Canvas Demo Upload Modal */}
-      <Dialog open={showCanvasDemoUpload} onClose={() => setShowCanvasDemoUpload(false)}>
-        <DialogTitle>Upload a Video
-          <IconButton aria-label="close" onClick={() => setShowCanvasDemoUpload(false)} sx={{ position: 'absolute', right: 8, top: 8 }}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <Button variant="outlined" component="label" startIcon={<UploadFileIcon />} fullWidth sx={{ mb: 2 }}>
-            Select Video File
-            <input type="file" accept="video/*" hidden onChange={handleCanvasDemoFileChange} />
-          </Button>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowCanvasDemoUpload(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleCanvasDemoUploadNext} disabled={!canvasDemoFileUrl}>Next</Button>
-        </DialogActions>
-      </Dialog>
+      {showCanvasDemoUpload && (
+        <div className="modal-overlay" onClick={() => setShowCanvasDemoUpload(false)} style={{backdropFilter:'blur(2px)',background:'rgba(0,0,0,0.18)'}}>
+          <div className="modal" onClick={e => e.stopPropagation()} style={{borderRadius:16,boxShadow:'0 6px 32px 0 rgba(0,0,0,0.18)',padding:'32px 28px',minWidth:320}}>
+            <button className="modal-close" onClick={() => setShowCanvasDemoUpload(false)} style={{position:'absolute',top:12,right:18,fontSize:'2rem',background:'none',border:'none',color:'#333',cursor:'pointer'}}>&times;</button>
+            <h2 className="modal-heading" style={{marginBottom:18,fontWeight:700,fontSize:'1.3rem',textAlign:'center'}}>Upload a Video</h2>
+            <input
+              type="file"
+              accept="video/*"
+              onChange={handleCanvasDemoFileChange}
+              style={{marginBottom:20,padding:'10px 0',border:'1px solid #ddd',borderRadius:8,width:'100%'}}
+            />
+            <button
+              className="cta-btn primary"
+              style={{width:'100%',padding:'10px',borderRadius:8,background:'linear-gradient(90deg,#3b82f6,#06b6d4)',color:'#fff',fontWeight:600,letterSpacing:0.5,fontSize:'1rem',marginTop:8,border:'none',boxShadow:'0 2px 8px 0 rgba(59,130,246,0.08)'}}
+              disabled={!canvasDemoFileUrl}
+              onClick={handleCanvasDemoUploadNext}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
       {/* Canvas Demo Meta Modal */}
-      <Dialog open={showCanvasDemoMetaModal} onClose={() => setShowCanvasDemoMetaModal(false)}>
-        <DialogTitle>Video Details
-          <IconButton aria-label="close" onClick={() => setShowCanvasDemoMetaModal(false)} sx={{ position: 'absolute', right: 8, top: 8 }}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <Box component="form" onSubmit={handleCanvasDemoMetaSubmit} sx={{ mt: 1 }}>
-            <TextField
-              label="Title"
-              value={canvasDemoTitle}
-              onChange={e => setCanvasDemoTitle(e.target.value)}
-              required
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Lock Time (seconds)"
-              type="number"
-              value={canvasDemoLockTime}
-              onChange={e => setCanvasDemoLockTime(e.target.value)}
-              required
-              fullWidth
-              inputProps={{ min: 0 }}
-            />
-            <DialogActions sx={{ mt: 2 }}>
-              <Button onClick={() => setShowCanvasDemoMetaModal(false)}>Cancel</Button>
-              <Button type="submit" variant="contained" disabled={!canvasDemoTitle || !canvasDemoLockTime}>Save</Button>
-            </DialogActions>
-          </Box>
-        </DialogContent>
-      </Dialog>
+      {showCanvasDemoMetaModal && (
+        <div className="modal-overlay" onClick={() => setShowCanvasDemoMetaModal(false)} style={{backdropFilter:'blur(2px)',background:'rgba(0,0,0,0.18)'}}>
+          <div className="modal" onClick={e => e.stopPropagation()} style={{borderRadius:16,boxShadow:'0 6px 32px 0 rgba(0,0,0,0.18)',padding:'32px 28px',minWidth:320}}>
+            <button className="modal-close" onClick={() => setShowCanvasDemoMetaModal(false)} style={{position:'absolute',top:12,right:18,fontSize:'2rem',background:'none',border:'none',color:'#333',cursor:'pointer'}}>&times;</button>
+            <h2 className="modal-heading" style={{marginBottom:18,fontWeight:700,fontSize:'1.3rem',textAlign:'center'}}>Video Details</h2>
+            <form onSubmit={handleCanvasDemoMetaSubmit}>
+              <div className="form-group" style={{marginBottom:18}}>
+                <label style={{fontWeight:600,marginBottom:6,display:'block'}}>Title</label>
+                <input
+                  type="text"
+                  value={canvasDemoTitle}
+                  onChange={e => setCanvasDemoTitle(e.target.value)}
+                  required
+                  style={{width:'100%',padding:'10px',border:'1px solid #ddd',borderRadius:8,fontSize:'1rem'}}
+                />
+              </div>
+              <div className="form-group" style={{marginBottom:18}}>
+                <label style={{fontWeight:600,marginBottom:6,display:'block'}}>Lock Time (seconds)</label>
+                <input
+                  type="number"
+                  value={canvasDemoLockTime}
+                  onChange={e => setCanvasDemoLockTime(e.target.value)}
+                  min="0"
+                  required
+                  style={{width:'100%',padding:'10px',border:'1px solid #ddd',borderRadius:8,fontSize:'1rem'}}
+                />
+              </div>
+              <button className="cta-btn primary" type="submit" disabled={!canvasDemoTitle || !canvasDemoLockTime} style={{width:'100%',padding:'10px',borderRadius:8,background:'linear-gradient(90deg,#3b82f6,#06b6d4)',color:'#fff',fontWeight:600,letterSpacing:0.5,fontSize:'1rem',marginTop:8,border:'none',boxShadow:'0 2px 8px 0 rgba(59,130,246,0.08)'}}>
+                Save
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Upload Modal */}
       {showUploadModal && (
@@ -735,44 +643,51 @@ function App() {
       )}
 
       {/* Engagement Form Modal (overlays for Monetize tab and Canvas Demo tab) */}
-      <Dialog open={showEngageForm && (activeTab === 'monetize' || activeTab === 'canvasdemo')} onClose={() => handleCloseEngageForm(0)}>
-        <DialogTitle>To continue watching, enter your email:
-          <IconButton aria-label="close" onClick={() => handleCloseEngageForm(0)} sx={{ position: 'absolute', right: 8, top: 8 }}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <Box component="form" onSubmit={e => { e.preventDefault(); handleEngageSubmit(); }}>
-            <TextField
-              label="Email"
-              type="email"
-              value={engageEmail}
-              onChange={handleEngageEmailChange}
-              onBlur={() => setEngageEmailTouched(true)}
-              error={engageEmailTouched && !isValidEmail(engageEmail)}
-              helperText={engageEmailTouched && !isValidEmail(engageEmail) ? 'Please enter a valid email address.' : ''}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <DialogActions>
-              <Button onClick={() => handleCloseEngageForm(5)} disabled={skipCountdown > 0} color="secondary">
-                {skipCountdown > 0 ? `Skip (${skipCountdown})` : 'Skip 5s'}
-              </Button>
-              <Button type="submit" variant="contained" disabled={!isValidEmail(engageEmail)}>Submit</Button>
-            </DialogActions>
-          </Box>
-        </DialogContent>
-      </Dialog>
-    <Snackbar
-      open={snackbar.open}
-      autoHideDuration={3000}
-      onClose={() => setSnackbar({ ...snackbar, open: false })}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-    >
-      <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} sx={{ width: '100%' }}>
-        {snackbar.message}
-      </Alert>
-    </Snackbar>
-  </Box>
+      {showEngageForm && (activeTab === 'monetize' || activeTab === 'canvasdemo') && (
+        <div className="modal-overlay" style={{zIndex:2000,backdropFilter:'blur(2px)',background:'rgba(0,0,0,0.18)'}}>
+          <div className="modal" style={{maxWidth:400,margin:'80px auto',borderRadius:16,boxShadow:'0 6px 32px 0 rgba(0,0,0,0.18)',padding:'32px 28px'}}>
+            <h3 style={{fontWeight:700,marginBottom:18,textAlign:'center',fontSize:'1.15rem'}}>To continue watching, enter your email:</h3>
+            <form onSubmit={e => { e.preventDefault(); handleEngageSubmit(); }}>
+              <div className="form-group" style={{alignItems:'flex-start',marginBottom:18}}>
+                <input
+                  type="email"
+                  className="form-input"
+                  placeholder="Enter your email"
+                  value={engageEmail}
+                  onChange={handleEngageEmailChange}
+                  onBlur={() => setEngageEmailTouched(true)}
+                  style={{
+                    fontSize: '1rem',
+                    padding: '10px',
+                    borderRadius: 8,
+                    width: '100%',
+                    border: '1px solid #ddd',
+                    marginBottom: 4,
+                    ...(engageEmailTouched && !isValidEmail(engageEmail) ? { borderColor: 'red' } : {}),
+                  }}
+                />
+                {engageEmailTouched && !isValidEmail(engageEmail) && (
+                  <div style={{ color: 'red', fontSize: '0.92em', marginTop: 2, textAlign: 'left' }}>Please enter a valid email address.</div>
+                )}
+              </div>
+              <div className="form-actions" style={{display:'flex',gap:10,flexDirection:'row',justifyContent:'center'}}>
+                <button
+                  type="button"
+                  className="cta-btn secondary"
+                  style={{padding:'10px 18px',borderRadius:8,border:'1px solid #3b82f6',background:'#fff',color:'#3b82f6',fontWeight:600,fontSize:'1rem'}}
+                  onClick={() => handleCloseEngageForm(5)}
+                  disabled={skipCountdown > 0}
+                >
+                  {skipCountdown > 0 ? `Skip (${skipCountdown})` : 'Skip 5s'}
+                </button>
+                <button type="submit" className="cta-btn primary" disabled={!isValidEmail(engageEmail)} style={{padding:'10px 18px',borderRadius:8,background:'linear-gradient(90deg,#3b82f6,#06b6d4)',color:'#fff',fontWeight:600,fontSize:'1rem',border:'none',boxShadow:'0 2px 8px 0 rgba(59,130,246,0.08)'}}>Submit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default App;
